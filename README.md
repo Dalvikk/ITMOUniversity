@@ -9,4 +9,6 @@ Available only in Russian
 
 *   [Алгоритмы и структуры данных, лабораторные работы](./AlgorithmsAndDataStructures/README.md)
 
+*   [Дискретная математика, лабораторные работы](./DiscreteMath/README.md)
+   
 *   Математический анализ, конспекты. [2 семестр](./MathAnalysis/conspect.pdf)
