@@ -23,8 +23,8 @@ public class ArrayQueueMyTest {
         System.out.println(queue.size()); // 0
         System.out.println(queue.isEmpty()); // true
         try {
-            queue.dequeue(); // Exception
-            Object ignored = queue.element(); // Exception too
+            Object ignored = queue.dequeue(); // Exception
+            ignored = queue.element(); // Exception too
             queue.enqueue(null); // Exception too
             System.out.println("Unsuccessful: exception expected");
         } catch (Exception e) {
