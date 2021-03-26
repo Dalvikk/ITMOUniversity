@@ -2,6 +2,84 @@
 
 Домашние работы курса 2-ого семестра «Парадигмы программирования» кафедры КТ, университета ИТМО
 
+## Домашнее задание 5. Функциональные выражения на JavaScript
+
+[Решение](./src/JSfunctionalExpression/functionalExpression.js)  
+[Исходный код тестов](./tests/src/javascript/jstest/functional/FunctionalOneFPTest.java)   
+
+1.  Разработайте функции `cnst`, `variable`, `add`, `subtract`, `multiply`, `divide`, `negate` для вычисления выражений с одной переменной.
+
+2.  Функции должны позволять производить вычисления вида:
+
+    ```
+    let expr = subtract(
+        multiply(
+            cnst(2),
+            variable("x")
+        ),
+        cnst(3)
+    );
+    
+    println(expr(5));
+                
+    ```
+
+    При вычислении такого выражения вместо каждой переменной подставляется значение, переданное в качестве параметра функции `expr` (на данном этапе имена переменных игнорируются). Таким образом, результатом вычисления приведенного примера должно стать число 7.
+
+3.  Тестовая программа должна вычислять выражение `x2−2x+1`, для `x` от 0 до 10.
+
+4.  Требуется дополнительно написать функцию `parse`, осуществляющую разбор выражений, записанных в обратной польской записи. Например, результатом `parse("x x 2 - * x * 1 +")(5)` должно быть число `76`.
+
+5.  Дополнительно реализовать поддержку:
+
+    -   переменных: `y`, `z`
+    -   констант:
+        -   `one` – 1;
+        -   `two` – 2;
+    -   операций:
+        -   `*+` (`madd`) – тернарный оператор произведение-сумма, `2 3 4 *+` равно 10;
+        -   `_` (`floor`) – округление вниз `2.7 _` равно 2;
+        -   `^` (`ceil`) – округление вверх `2.7 ^` равно 3.
+
+6.  При выполнение задания следует обратить внимание на:
+
+    -   Применение функций высшего порядка.
+
+    -   Выделение общего кода для операций.
+    
+### Как запускать тесты
+
+-   Для запуска тестов используется [GraalJS](https://github.com/graalvm/graaljs) (часть проекта [GraalVM](https://www.graalvm.org/), вам не требуется их скачивать отдельно)
+
+-   Для запуска тестов можно использовать скрипты `TestJS.cmd` и `TestJS.sh`
+
+    -   Репозиторий должен быть скачан целиком.
+    -   Скрипты должны находиться в каталоге `javascript` (их нельзя перемещать, но можно вызывать из других каталогов).
+    -   В качестве аргументов командной строки указывается полное имя класса теста и модификация, например `jstest.functional.FunctionalExpressionTest hard`.
+
+-   Для самостоятельно запуска из консоли необходимо использовать командную строку вида:
+
+    ```
+    java -ea --module-path=<js>/graal --class-path <js> jstest.functional.FunctionalExpressionTest {hard|easy}
+    ```
+
+    -   `-ea` – включение проверок времени исполнения;
+    -   `--module-path=<js>/graal` путь к модулям Graal (здесь и далее `<js>` путь к каталогу `javascript` этого репозитория);
+    -   `--class-path <js>` путь к откомпилированным тестам;
+    -   {`hard`|`easy`} указание тестируемой модификации.
+
+-   При запуске из IDE, обычно не требуется указывать `--class-path`, так как он формируется автоматически. Остальные опции все равно необходимо указать.
+
+    #### Troubleshooting
+
+    -   `Error occurred during initialization of boot layer java.lang.module.FindException: Module org.graalvm.truffle not found, required by jdk.internal.vm.compiler` – неверно указан `--module-path`;
+    -   `Graal.js not found` – неверно указаны `--module-path`
+    -   `Error: Could not find or load main class jstest.functional.FunctionalExpressionTest` – неверно указан `--class-path`;
+    -   `Error: Could not find or load main class <other class>` – неверно указано полное имя класса теста;
+    -   `Exception in thread "main" java.lang.AssertionError: You should enable assertions by running 'java -ea jstest.functional.FunctionalExpressionTest'` – не указана опция `-ea`;
+    -   `First argument should be one of: "easy", "hard", found: XXX` – неверно указана сложность;
+    -   `Exception in thread "main" jstest.EngineException: Script 'functionalExpression.js' not found` – в текущем каталоге отсутствует решение (`functionalExpression.js`)
+
 ## Домашнее задание 4. Вычисление в различных типах
 
 [Решение](./src/expression/generic/GenericTabulator.java)  
