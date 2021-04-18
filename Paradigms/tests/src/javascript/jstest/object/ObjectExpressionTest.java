@@ -37,7 +37,7 @@ public class ObjectExpressionTest extends BaseJavascriptTest<JSEngine> {
             new int[]{1, 1, 1},
             new int[]{1, 1, 10},
             new int[]{4, 1, 1},
-            new int[]{21, 28, 28},
+            new int[]{9, 28, 28},
             new int[]{5, 5, 5},
             new int[]{5, 2, 21}
     );
@@ -108,7 +108,7 @@ public class ObjectExpressionTest extends BaseJavascriptTest<JSEngine> {
                 }
             }
         }
-//        System.out.format("[]{%s},%n", Arrays.stream(actual).mapToObj(Integer::toString).collect(Collectors.joining(", ")));
+//        System.out.format("{%s},%n", Arrays.stream(actual).mapToObj(Integer::toString).collect(Collectors.joining(", ")));
     }
 
     @Override

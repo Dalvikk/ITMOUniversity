@@ -119,7 +119,7 @@ public abstract class BaseJavascriptTest<E extends Engine> extends BaseTest {
             System.err.println("ERROR: No arguments found");
         } else if (args.length > 1) {
             System.err.println("ERROR: Only one argument expected, " + args.length + " found");
-        } else if (Arrays.asList(modes).indexOf(args[0]) < 0) {
+        } else if (!Arrays.asList(modes).contains(args[0])) {
             System.err.println("ERROR: First argument should be one of: \"" + String.join("\", \"", modes) + "\", found: \"" + args[0] + "\"");
         } else {
             return Arrays.asList(modes).indexOf(args[0]);
@@ -135,8 +135,7 @@ public abstract class BaseJavascriptTest<E extends Engine> extends BaseTest {
 
     public interface Operator<T> {
         T apply(List<T> args);
-
-        int arity();
+        int getArity(Random random);
     }
 
     public static class Dialect {

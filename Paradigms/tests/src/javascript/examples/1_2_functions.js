@@ -107,6 +107,6 @@ const stupidArrow = (v) => {
     println(v);
     // No "arguments" for arrow functions
     // println(arguments);
-}
+};
 example("stupidArrow");
 example("stupidArrow(3)");

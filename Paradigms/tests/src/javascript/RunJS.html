@@ -19,7 +19,11 @@
     }
 
     function include(file) {
-        document.write('<script src="' + file + '" charset="UTF-8"></' + 'script>');
+        if (file.endsWith(".mjs")) {
+            println(`ES module loading not supported: ${file}`);
+        } else {
+            document.write(`<script src="${file}" charset="UTF-8"></` + `script>`);
+        }
     }
 
     function getParameterByName(name, defaultValue) {

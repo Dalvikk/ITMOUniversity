@@ -15,7 +15,11 @@ var context = {
     },
     fs: require("fs"),
     include: function(file) {
-        context.eval(context.fs.readFileSync(file), {encoding: "utf8"});
+        if (file.endsWith(".mjs")) {
+            context.println(`ES module loading not supported: ${file}`);
+        } else {
+            context.eval(context.fs.readFileSync(file), {encoding: "utf8"});
+        }
     },
     readLine: function(prompt) {
         context.reader = context.reader || require("readline-sync"); //npm install readline-sync

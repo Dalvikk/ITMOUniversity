@@ -50,7 +50,7 @@ public abstract class AbstractTests implements Cloneable {
             return generateP(random, depth);
         } else {
             final String name = operatorNames.get(random.nextInt(operatorNames.size()));
-            final int arity = operators.get(name).arity();
+            final int arity = operators.get(name).getArity(random);
             return f(
                     name,
                     Stream.generate(() -> generateP(random, depth))
@@ -69,6 +69,10 @@ public abstract class AbstractTests implements Cloneable {
     }
 
     protected void any(final String name, final int arity, final Function<List<Double>, Double> f) {
+        any(name, arity, arity, f);
+    }
+
+    protected void any(final String name, final int minArity, final int maxArity, final Function<List<Double>, Double> f) {
         operatorNames.add(name);
         operators.put(name, new Operator<>() {
             @Override
@@ -77,8 +81,8 @@ public abstract class AbstractTests implements Cloneable {
             }
 
             @Override
-            public int arity() {
-                return arity;
+            public int getArity(final Random random) {
+                return minArity + random.nextInt(maxArity - minArity + 1);
             }
         });
     }
