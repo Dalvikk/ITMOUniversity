@@ -14,17 +14,19 @@ import java.util.stream.Collectors;
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  */
-public class JSEngine implements Engine {
+public class JSEngine implements Engine<Object> {
     public static Path JS_ROOT = Path.of(".");
     public static final String OPTIONS = "--module-path=<js>/graal";
+
     private final ScriptEngine engine;
     private final String evaluate;
-    private String expression;
+    private final String parse;
+    private final String toString;
 
-    public String toStringMethod = "toString";
-
-    public JSEngine(final String script, final String evaluate) {
+    public JSEngine(final Path script, final String evaluate, final String parse, final String toString) {
         this.evaluate = evaluate;
+        this.parse = parse;
+        this.toString = toString;
 
         try {
             engine = new ScriptEngineManager().getEngineByName("Graal.js");
@@ -49,7 +51,7 @@ public class JSEngine implements Engine {
         }
 
         try {
-            include(script, engine);
+            include(script.toString(), engine);
         } catch (final ScriptException e) {
             throw new EngineException("Script error", e);
         }
@@ -65,17 +67,20 @@ public class JSEngine implements Engine {
     }
 
     @Override
-    public void parse(final String expression) {
-        try {
-            engine.eval("expr = " + expression);
-            this.expression = expression;
-        } catch (final ScriptException e) {
-            throw new EngineException("Parse error for " + expression, e);
-        }
+    public Result<Object> prepare(final String expression) {
+        return parse("eval", expression);
     }
 
-    private <T> Result<T> evaluate(final String code, final Class<T> token) {
-        final String context = String.format("%n    in %s%n    where expr = %s%n", code, expression);
+    @Override
+    public Result<Object> parse(final String expression) {
+        return parse(parse, expression);
+    }
+
+    private Result<Object> parse(final String parse, final String expression) {
+        return eval(expression, String.format("%s(\"%s\")", parse, expression), Object.class);
+    }
+
+    private <T> Result<T> eval(final String context, final String code, final Class<T> token) {
         try {
             final Object result = engine.eval(code);
             if (result == null) {
@@ -92,26 +97,27 @@ public class JSEngine implements Engine {
                     context
             ), null);
         } catch (final ScriptException e) {
-            throw new EngineException("No error expected" + context, e);
+            throw new EngineException("No error expected in " + context + ": " + e.getMessage(), e);
         }
     }
 
     @Override
-    public Result<Number> evaluate(final double[] vars) {
+    public Result<Number> evaluate(final Result<Object> prepared, final double[] vars) {
         final String code = String.format(
                 "expr%s(%s);",
                 evaluate,
                 Arrays.stream(vars).mapToObj(v -> String.format("%.20f", v)).collect(Collectors.joining(","))
         );
-        return evaluate(code, Number.class);
+        return evaluate(prepared, code, Number.class);
     }
 
-    public Result<String> parsedToString() {
-        return parsedToString(toStringMethod);
+    public Result<String> toString(final Result<Object> prepared) {
+        return evaluate(prepared, "expr." + toString + "()", String.class);
     }
 
-    public Result<String> parsedToString(final String toStringMethod) {
-        return evaluate("expr." + toStringMethod + "()", String.class);
+    private <T> Result<T> evaluate(final Result<Object> prepared, final String code, final Class<T> result) {
+        engine.getBindings(ScriptContext.ENGINE_SCOPE).put("expr", prepared.value);
+        return eval(String.format("%n    in %s%n    where expr = %s%n", code, prepared.context), code, result);
     }
 
     @SuppressWarnings({"MethodMayBeStatic", "unused"})

@@ -7,7 +7,7 @@ if [[ -z "$2" ]] ; then
 fi
 
 CLASS="$1"
-VARIANT="$2"
+ARGS="$2 ${3-}"
 
 OUT=__OUT
 CLOJURE="$(dirname "$0")"
@@ -18,4 +18,4 @@ javac \
     -d "$OUT" \
     "--class-path=$LIB:$REPO/java:$REPO/javascript:$REPO/clojure" \
     "$CLOJURE/${CLASS//\./\/}.java" \
- && java -ea "--class-path=$LIB:$OUT" "$CLASS" "$VARIANT"
+ && java -ea "--class-path=$LIB:$OUT" "$CLASS" $ARGS

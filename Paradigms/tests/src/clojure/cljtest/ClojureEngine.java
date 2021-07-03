@@ -8,37 +8,44 @@ import java.util.Optional;
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  */
-public class ClojureEngine implements Engine {
+public class ClojureEngine implements Engine<Object> {
     private static final IFn HASH_MAP = ClojureScript.var("clojure.core/hash-map");
 
     private final Optional<IFn> evaluate;
     private final String evaluateString;
-    private Result<Object> parsed;
-    private String expression;
+    private final ClojureScript.F<Object> parse;
+    private final ClojureScript.F<String> toString;
 
-    public ClojureEngine(final String script, final Optional<String> evaluate) {
+    public ClojureEngine(final String script, final Optional<String> evaluate, final String parse, final String toString) {
         ClojureScript.loadScript(script);
+        this.parse = ClojureScript.function(parse, Object.class);
+        this.toString = ClojureScript.function(toString, String.class);
 
         this.evaluate = evaluate.map(ClojureScript::var);
         evaluateString = evaluate.map(s -> s + " ").orElse("");
     }
 
     @Override
-    public void parse(final String expression) {
-        parsed = new Result<>(expression, ClojureScript.LOAD_STRING_IN.invoke(expression));
-        this.expression = expression;
+    public Result<Object> prepare(final String expression) {
+        return new Result<>(expression, ClojureScript.LOAD_STRING_IN.invoke(expression));
     }
 
     @Override
-    public Result<Number> evaluate(final double[] vars) {
-        final Object map = HASH_MAP.invoke("x", vars[0], "y", vars[1], "z", vars[2]);
-        final String context = java.lang.String.format("(%sexpr %s)\nwhere expr = %s", evaluateString, map, expression);
-        return evaluate
-                .map(f -> ClojureScript.call(f, new Object[]{parsed.value, map}, Number.class, context))
-                .orElseGet(() -> ClojureScript.call((IFn) parsed.value, new Object[]{map}, Number.class, context));
+    public Result<Object> parse(final String expression) {
+        return parse.call(new Result<>(expression, expression));
     }
 
-    public Result<String> toString(final ClojureScript.F<String> f) {
-        return f.call(parsed);
+    @Override
+    public Result<Number> evaluate(final Result<Object> prepared, final double[] vars) {
+        final Object map = HASH_MAP.invoke("x", vars[0], "y", vars[1], "z", vars[2]);
+        final String context = java.lang.String.format("(%sexpr %s)\nwhere expr = %s", evaluateString, map, prepared.context);
+        return evaluate
+                .map(f -> ClojureScript.call(f, Number.class, context, new Object[]{prepared.value, map}))
+                .orElseGet(() -> ClojureScript.call((IFn) prepared.value, Number.class, context, new Object[]{map}));
+    }
+
+    @Override
+    public Result<String> toString(final Result<Object> prepared) {
+        return toString.call(prepared);
     }
 }

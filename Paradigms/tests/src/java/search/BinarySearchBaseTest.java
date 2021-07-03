@@ -20,7 +20,7 @@ public class BinarySearchBaseTest {
             final int[] a = new int[size];
             for (final int max : new int[]{5, 4, 2, 1, 0, 10, 100, Integer.MAX_VALUE / 2}) {
                 for (int i = 0; i < size; i++) {
-                    a[i] = checker.random.nextInt(max * 2 + 1) - max;
+                    a[i] = checker.randomInt(-max, max);
                 }
                 Arrays.sort(a);
                 for (int i = 0; i < size / 2; i++) {
@@ -49,7 +49,7 @@ public class BinarySearchBaseTest {
     }
 
     protected static int[] sortedInts(final MainChecker checker, final int size, final int max) {
-        return checker.random.ints(size, -max, max + 1).sorted().distinct().toArray();
+        return checker.getRandom().ints(size, -max, max + 1).sorted().distinct().toArray();
     }
 
     interface Solver {

@@ -17,3 +17,14 @@
 (lecture "3. Objects")
 (load-file "examples/3_1_js-objects.clj")
 (load-file "examples/3_2_java-objects.clj")
+
+(lecture "4. Misc")
+(load-file "examples/4_1_macro.clj")
+(load-file "examples/4_2_mutable-state.clj")
+(load-file "examples/4_3_church.clj")
+
+(lecture "5. Parser combinators")
+(load-file "examples/5_1_base.clj")
+(load-file "examples/5_2_combinators.clj")
+(load-file "examples/5_3_json.clj")
+(load-file "examples/5_4_macro.clj")

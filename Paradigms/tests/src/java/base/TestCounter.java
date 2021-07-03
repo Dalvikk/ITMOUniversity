@@ -48,7 +48,7 @@ public class TestCounter {
     }
 
 
-    public static String getVersion(final Class clazz) {
+    public static String getVersion(final Class<?> clazz) {
         try {
             final ClassLoader cl = clazz.getClassLoader();
             final URL url = cl.getResource(clazz.getName().replace('.', '/') + ".class");

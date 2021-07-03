@@ -11,11 +11,14 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
  */
-public class MainChecker extends Randomized {
+public class MainChecker implements Randomized {
+    protected final Random random = Randomized.initRandom(8045702385702345703L, getClass());
+
     private final Method method;
     protected final TestCounter counter = new TestCounter();
 
@@ -83,8 +86,8 @@ public class MainChecker extends Randomized {
         counter.passed();
     }
 
-    public void printStatus(final Class<?> clazz) {
-        counter.printStatus(clazz);
+    public void printStatus(final Class<?> clazz, final String... args) {
+        counter.printStatus(clazz, args);
     }
     public void printStatus() {
         printStatus(getClass());
@@ -92,5 +95,10 @@ public class MainChecker extends Randomized {
 
     protected static void write(final String file, final String contents) throws IOException {
         Files.write(Paths.get(file), contents.getBytes(StandardCharsets.UTF_8), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+    }
+
+    @Override
+    public Random getRandom() {
+        return random;
     }
 }

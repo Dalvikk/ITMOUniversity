@@ -34,7 +34,7 @@ public class ClojureScript {
         LOAD_FILE.invoke(CLOJURE_ROOT.resolve(script).toString());
     }
 
-    protected static <T> Engine.Result<T> call(final IFn f, final Object[] args, final Class<T> type, final String context) {
+    protected static <T> Engine.Result<T> call(final IFn f, final Class<T> type, final String context, final Object[] args) {
         final Object result;
         try {
             result = callUnsafe(f, args);
@@ -98,9 +98,9 @@ public class ClojureScript {
         public Engine.Result<T> call(final Engine.Result<?>... args) {
             return ClojureScript.call(
                     f,
-                    Arrays.stream(args).map(arg -> arg.value).toArray(),
                     type,
-                    "(" + name + Arrays.stream(args).map(arg -> " " + arg.context).collect(Collectors.joining()) + ")"
+                    "(" + name + Arrays.stream(args).map(arg -> " " + arg.context).collect(Collectors.joining()) + ")",
+                    Arrays.stream(args).map(arg -> arg.value).toArray()
             );
         }
 
